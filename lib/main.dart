@@ -46,28 +46,7 @@ class LoginWrapper extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      child: LoginPage(
-        onLoginSuccess: () {
-          // Setelah login berhasil, ganti dengan MainPage
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainPage()), // Ganti ke MainPage
-          );
-        },
-        onRegisterTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RegisterPage(
-              onLoginTap: () {
-                Navigator.pop(context);
-              },
-              onRegisterSuccess: () {
-                Navigator.pop(context);
-              },
-            )),
-          );
-        },
-      ),
+      child: LoginPage(),
     );
   }
 }

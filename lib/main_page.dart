@@ -4,7 +4,6 @@ import 'package:konser_tiket/pages/dashboard/dashboard_page.dart';
 import 'package:konser_tiket/pages/history/history_page.dart';
 import 'package:konser_tiket/pages/profile/profile_page.dart';
 
-
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -16,15 +15,10 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    LoginPage(onRegisterTap: onRegisterTap, onLoginSuccess: onLoginSuccess),
     DashboardPage(),
     HistoryPage(),
     ProfilePage(),
   ];
-  
-  static get onRegisterTap => null;
-  
-  static get onLoginSuccess => null;
 
   void _onItemTapped(int index) {
     setState(() {

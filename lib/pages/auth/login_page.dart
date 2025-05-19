@@ -1,15 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:konser_tiket/ipAddress.dart';
 import 'package:konser_tiket/main_page.dart';
 import 'package:konser_tiket/pages/auth/register_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  final VoidCallback onRegisterTap;
-  final VoidCallback onLoginSuccess;
-
   const LoginPage({
     super.key,
-    required this.onRegisterTap,
-    required this.onLoginSuccess,
   });
 
   @override
@@ -19,6 +19,36 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  String errorText = '';
+
+  Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final Map<String, String> header = {
+      'User-Agent': 'android',
+      'Content-Type': 'application/json'
+    };
+    final body = jsonEncode({'email': email, 'password': password});
+    final res = await http.post(Uri.parse(ipAddress + "api/login/"),
+        headers: header, body: body);
+    var resBody = jsonDecode(res.body);
+
+    if (res.statusCode == 202) {
+      final preference = await SharedPreferences.getInstance();
+      preference.setString('token', resBody["token"]);
+      print(resBody["token"]);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainPage()),
+      );
+    } else {
+      print(resBody);
+      setState(() {
+        errorText = resBody["message"];
+      });
+    }
+    print(res.statusCode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +75,10 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.grey,
                     ),
                   ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(errorText),
                 ),
                 const SizedBox(height: 24),
                 TextField(
@@ -90,12 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     onPressed: () {
-                      // Navigasi setelah login berhasil
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MainPage()),
-                      );
-                      widget.onLoginSuccess();
+                      _login();
                     },
                     child: const Text(
                       'Sign In',
@@ -112,7 +141,13 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(color: Colors.grey),
                     ),
                     GestureDetector(
-                      onTap: widget.onRegisterTap,
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()),
+                        );
+                      },
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(

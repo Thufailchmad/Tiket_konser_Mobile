@@ -1,7 +1,44 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:developer';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:konser_tiket/ipAddress.dart';
+
+class DashboardPage extends StatefulWidget {
+  @override
+  _DashboardPage createState() => _DashboardPage();
+}
+
+class _DashboardPage extends State<DashboardPage> {
+  late Future<List<dynamic>> _data;
+  List<dynamic> _dataList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _data = getData();
+  }
+
+  Future<List<dynamic>> getData() async {
+    final Map<String, String> header = {
+      'User-Agent': 'android',
+      'Content-Type': 'application/json'
+    };
+    final response =
+        await http.get(Uri.parse(ipAddress + "api/"), headers: header);
+
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      setState(() {
+        _dataList = List<dynamic>.from(body["data"]);
+      });
+      return List<dynamic>.from(body["data"]);
+    }
+
+    throw Exception("Gagal mengambil data");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,26 +48,24 @@ class DashboardPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Image.asset(
-              'assets/logo-tiket2.png', 
+              'assets/logo-tiket2.png',
               height: 80,
             ),
             IconButton(
               icon: Icon(Icons.person),
-              color: Color(0xFF0027B4), 
-              onPressed: () {
-                
-              },
+              color: Color(0xFF0027B4),
+              onPressed: () {},
             ),
           ],
         ),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16), 
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Image.asset(
-              'assets/sponsor.png'
-              , height: 150, 
+              'assets/sponsor.png',
+              height: 150,
             ),
             // Container(
             //   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -65,7 +100,8 @@ class DashboardPage extends StatelessWidget {
             // GridView
             Expanded(
               child: GridView.builder(
-                itemCount: 4, // Jumlah item disesuaikan dengan desain
+                itemCount:
+                    _dataList.length, // Jumlah item disesuaikan dengan desain
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 3 / 4,
