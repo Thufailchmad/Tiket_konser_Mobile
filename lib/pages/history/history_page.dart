@@ -22,7 +22,7 @@ class HistoryPage extends StatelessWidget {
               height: 80,
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.shopping_cart),
               color: Color(0xFF0027B4),
               onPressed: () {
               },

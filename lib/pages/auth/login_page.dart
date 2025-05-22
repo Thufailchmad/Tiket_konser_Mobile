@@ -21,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   String errorText = '';
 
+  bool _obscurePassword = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -75,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Logo
+                // Logo dan text lain tetap sama...
                 Image.asset(
                   'assets/logo-tiket2.png',
                   height: 200,
@@ -107,27 +109,40 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // Ini bagian password dengan suffixIcon toggle
                 TextField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Forgot Password',
-                      style: TextStyle(color: Colors.black),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 8),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: TextButton(
+                //     onPressed: () {},
+                //     child: const Text(
+                //       'Forgot Password',
+                //       style: TextStyle(color: Colors.black),
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,

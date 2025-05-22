@@ -58,7 +58,7 @@ class _DashboardPage extends State<DashboardPage> {
               height: 80,
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.shopping_cart),
               color: Color.fromRGBO(0, 39, 180, 1),
               onPressed: () => Navigator.pushReplacement(
                 context,

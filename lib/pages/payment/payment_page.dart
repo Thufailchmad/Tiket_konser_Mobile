@@ -106,26 +106,103 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Pembayaran Tiket"),
+        backgroundColor: const Color.fromRGBO(0, 39, 180, 1),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
       body: Container(
+        padding: const EdgeInsets.all(20),
+        color: Colors.grey[100],
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
                 onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainPage()),
-                    ),
-                child: Text('kembali')),
-            Text('${total}'),
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                ),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Kembali'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Total: Rp $total',
+              style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent),
+            ),
+            const SizedBox(height: 20),
             _image != null
-                ? Image.file(
-                    _image!,
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.file(
+                      _image!,
+                      height: 300,
+                      width: 300,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Container(
                     height: 300,
                     width: 300,
-                  )
-                : const Text('g da gambar'),
-            ElevatedButton(onPressed: pickImage, child: Text('pilih gambar')),
-            ElevatedButton(
-                onPressed: pembayaran, child: Text('konfirmasi pembayaran'))
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'tidak ada gambar',
+                      style: TextStyle(color: Colors.grey, fontSize: 18),
+                    ),
+                  ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: pickImage,
+                child: const Text('Pilih Gambar'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, 
+                  foregroundColor: Colors.blueAccent,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 250,
+              child: ElevatedButton(
+                onPressed: pembayaran,
+                child: const Text(
+                  'Konfirmasi Pembayaran',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // warna background
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  elevation: 4,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -19,7 +19,7 @@ class _ChartPageState extends State<ChartPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     getData();
   }
 
@@ -35,7 +35,6 @@ class _ChartPageState extends State<ChartPage> {
         await http.get(Uri.parse(ipAddress + "api/chart"), headers: header);
     final res = jsonDecode(req.body);
     if (req.statusCode == 202) {
-      print(res);
       setState(() {
         data = res["data"];
       });
@@ -47,22 +46,88 @@ class _ChartPageState extends State<ChartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Keranjang Tiket"),
+        centerTitle: true,
+        backgroundColor: Color.fromRGBO(0, 39, 180, 1),
+        foregroundColor: Colors.white,
+      ),
       body: Container(
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.grey[100],
         child: Column(
           children: [
-            ElevatedButton(
-                onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainPage()),
+            const SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.home, color: Color.fromRGBO(0, 39, 180, 1),),
+                title: const Text(
+                  "Kembali ke Beranda",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.payment, color: Colors.green),
+                title: const Text(
+                  "Lanjut ke Pembayaran",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PaymentPage()),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: data.isEmpty
+                  ? const Center(child: Text("Keranjang kosong"))
+                  : ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final item = data[index];
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.deepPurple[100],
+                              child: const Icon(Icons.music_note,
+                                  color: Colors.deepPurple),
+                            ),
+                            title: Text(item['name'] ?? 'Tiket'),
+                            subtitle:
+                                Text("Qty: ${item['qty'] ?? 1}"),
+                            trailing: Text(
+                              "Rp${item['price'] ?? 0}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                child: Text('data')),
-            ElevatedButton(
-                onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PaymentPage()),
-                    ),
-                child: Text('data')),
+            ),
           ],
         ),
       ),
