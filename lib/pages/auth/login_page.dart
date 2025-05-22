@@ -21,6 +21,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   String errorText = '';
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkLogin();
+  }
+
+  void checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString("token") ?? "";
+    if (token != '') {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const MainPage()));
+    }
+  }
+
   Future<void> _login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();

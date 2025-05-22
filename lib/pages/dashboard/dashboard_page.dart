@@ -3,7 +3,10 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:konser_tiket/ipAddress.dart';
+import 'package:konser_tiket/pages/chart/chart_page.dart';
+import 'package:konser_tiket/ticket/deskripsi.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPage extends State<DashboardPage> {
   late Future<List<dynamic>> _data;
   List<dynamic> _dataList = [];
+  final formatRupiah =
+      NumberFormat.currency(locale: "id_ID", symbol: "Rp", decimalDigits: 0);
 
   @override
   void initState() {
@@ -31,6 +36,7 @@ class _DashboardPage extends State<DashboardPage> {
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
+      print(body);
       setState(() {
         _dataList = List<dynamic>.from(body["data"]);
       });
@@ -53,8 +59,11 @@ class _DashboardPage extends State<DashboardPage> {
             ),
             IconButton(
               icon: Icon(Icons.person),
-              color: Color(0xFF0027B4),
-              onPressed: () {},
+              color: Color.fromRGBO(0, 39, 180, 1),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ChartPage()),
+              ),
             ),
           ],
         ),
@@ -110,43 +119,52 @@ class _DashboardPage extends State<DashboardPage> {
                 ),
                 itemBuilder: (context, index) {
                   return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Image.asset(
-                            'assets/image.png',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Center(
-                              child: Text('Gambar tidak ditemukan'),
-                            ),
-                          ),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: InkWell(
+                        onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Deskripsi(id: _dataList[index]["id"])),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Sound Wave Fest Early Bird',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.network(
+                                ipAddress + _dataList[index]["images"],
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Center(
+                                  child: Text('Gambar tidak ditemukan'),
+                                ),
                               ),
-                              const SizedBox(height: 4),
-                              const Text('16 May 2025'),
-                              const SizedBox(height: 4),
-                              const Text('Batu'),
-                              const SizedBox(height: 4),
-                              const Text('Rp. 160.000'),
-                            ],
-                          ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _dataList[index]["name"],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(_dataList[index]["expired"]),
+                                  const SizedBox(height: 4),
+                                  Text(_dataList[index]["lokasi"]),
+                                  const SizedBox(height: 4),
+                                  Text(formatRupiah
+                                      .format(_dataList[index]["price"])),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
+                      ));
                 },
               ),
             ),
