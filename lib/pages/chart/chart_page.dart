@@ -35,6 +35,7 @@ class _ChartPageState extends State<ChartPage> {
         await http.get(Uri.parse(ipAddress + "api/chart"), headers: header);
     final res = jsonDecode(req.body);
     if (req.statusCode == 202) {
+      print(res['data']);
       setState(() {
         data = res["data"];
       });
@@ -64,7 +65,10 @@ class _ChartPageState extends State<ChartPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: ListTile(
-                leading: const Icon(Icons.home, color: Color.fromRGBO(0, 39, 180, 1),),
+                leading: const Icon(
+                  Icons.home,
+                  color: Color.fromRGBO(0, 39, 180, 1),
+                ),
                 title: const Text(
                   "Kembali ke Beranda",
                   style: TextStyle(fontWeight: FontWeight.w600),
@@ -91,8 +95,7 @@ class _ChartPageState extends State<ChartPage> {
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () => Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const PaymentPage()),
+                  MaterialPageRoute(builder: (context) => const PaymentPage()),
                 ),
               ),
             ),
@@ -112,16 +115,16 @@ class _ChartPageState extends State<ChartPage> {
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.deepPurple[100],
-                              child: const Icon(Icons.music_note,
-                                  color: Colors.deepPurple),
+                              child: Image.network(
+                                ipAddress + item['ticket']['images'],
+                              ),
                             ),
-                            title: Text(item['name'] ?? 'Tiket'),
-                            subtitle:
-                                Text("Qty: ${item['qty'] ?? 1}"),
+                            title: Text(item['ticket']['name'] ?? 'Tiket'),
+                            subtitle: Text("Qty: ${item['qty'] ?? 1}"),
                             trailing: Text(
-                              "Rp${item['price'] ?? 0}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
+                              "Rp${item['ticket']['price'] ?? 0}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         );

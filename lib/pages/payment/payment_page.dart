@@ -74,14 +74,20 @@ class _PaymentPageState extends State<PaymentPage> {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
+    var body = [];
+    for (var item in data) {
+      body.add({'qty': item['qty'], 'ticketId': item['ticketId']});
+    }
+    var bodyInsert = {'ticket': body};
+    print(bodyInsert);
     final req = await http.post(Uri.parse(ipAddress + "api/history"),
-        headers: header, body: jsonEncode(data));
+        headers: header, body: jsonEncode(bodyInsert));
     final res = jsonDecode(req.body);
     if (req.statusCode == 201) {
       print(res);
       final req2 = await http.MultipartRequest(
         'POST',
-        Uri.parse(ipAddress + "api/history/${res["data"]["historyId"]}"),
+        Uri.parse(ipAddress + "api/history/${res["historyId"]}"),
       );
       req2.headers.addAll({
         'Authorization': 'Bearer $token',
@@ -89,13 +95,14 @@ class _PaymentPageState extends State<PaymentPage> {
         'User-Agent': 'android',
       });
 
-      req2.files.add(await http.MultipartFile.fromPath('file', _image!.path,
+      req2.files.add(await http.MultipartFile.fromPath('image', _image!.path,
           filename: _image!.path.split('/').last));
       var res2 = await req2.send();
       if (res2.statusCode == 202) {
         final resStr = await res2.stream.bytesToString();
         print("upload : ${resStr}");
       } else {
+        print(res2.statusCode);
         throw Exception("Gagal upload file");
       }
     } else {
@@ -176,7 +183,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 onPressed: pickImage,
                 child: const Text('Pilih Gambar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, 
+                  backgroundColor: Colors.white,
                   foregroundColor: Colors.blueAccent,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(

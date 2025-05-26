@@ -92,7 +92,8 @@ class _DeskripsiState extends State<Deskripsi> {
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(16)),
                           child: Image.network(
-                            data['images'] ?? 'https://via.placeholder.com/400',
+                            ipAddress + data['images'] ??
+                                'https://via.placeholder.com/400',
                             height: 200,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -118,7 +119,7 @@ class _DeskripsiState extends State<Deskripsi> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                "Harga: Rp${data['harga'] ?? 0}",
+                                "Harga: Rp${data['price'] ?? 0}",
                                 style: const TextStyle(
                                   fontSize: 18,
                                   color: Colors.green,
@@ -159,8 +160,7 @@ class _DeskripsiState extends State<Deskripsi> {
                     ),
                     child: const Text(
                       "Kembali ke Beranda",
-                      style:
-                          TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                 ],
