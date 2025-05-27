@@ -92,8 +92,8 @@ class _MainPageState extends State<MainPage> {
             label: 'History',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.confirmation_num),
+            label: 'Tiket Booked',
           ),
         ],
       ),

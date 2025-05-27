@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       'User-Agent': 'android',
       'Content-Type': 'application/json'
     };
+
     final body = jsonEncode({'email': email, 'password': password});
     final res = await http.post(Uri.parse(ipAddress + "api/login/"),
         headers: header, body: body);
@@ -54,18 +55,33 @@ class _LoginPageState extends State<LoginPage> {
     if (res.statusCode == 202) {
       final preference = await SharedPreferences.getInstance();
       preference.setString('token', resBody["token"]);
-      print(resBody["token"]);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+
+      // Tampilkan dialog berhasil
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Login Berhasil'),
+          content: const Text('Selamat datang kembali!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // tutup dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                );
+              },
+              child: const Text('Lanjut'),
+            ),
+          ],
+        ),
       );
     } else {
-      print(resBody);
       setState(() {
         errorText = resBody["message"];
       });
     }
-    print(res.statusCode);
   }
 
   @override
@@ -121,7 +137,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                       onPressed: () {
                         setState(() {
@@ -154,9 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      _login();
-                    },
+                    onPressed: _login,
                     child: const Text(
                       'Sign In',
                       style: TextStyle(color: Colors.white, fontSize: 16),

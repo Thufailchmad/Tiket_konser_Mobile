@@ -38,14 +38,33 @@ class _RegisterPage extends State<RegisterPage> {
         'name': nama,
         'passwordConfirmation': confirmPassword
       });
+
       final req = await http.post(Uri.parse(ipAddress + 'api/register/'),
           headers: header, body: body);
       print(req.statusCode);
       final res = jsonDecode(req.body);
+
       if (req.statusCode == 201) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+        // ✅ Tampilkan popup berhasil
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('Registrasi Berhasil'),
+            content: const Text('Akun berhasil dibuat. Silakan login.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Tutup dialog
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
       } else {
         setState(() {

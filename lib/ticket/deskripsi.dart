@@ -56,8 +56,23 @@ class _DeskripsiState extends State<Deskripsi> {
         headers: header, body: jsonEncode(body));
     final res = jsonDecode(req.body);
     if (req.statusCode == 202) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Tiket ditambahkan ke keranjang")),
+      // Ganti snackbar dengan popup dialog:
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Berhasil'),
+            content: const Text('Tiket berhasil ditambahkan ke keranjang.'),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // tutup dialog
+                },
+              ),
+            ],
+          );
+        },
       );
     } else {
       throw Exception("Gagal menambahkan data");

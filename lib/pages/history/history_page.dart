@@ -18,7 +18,7 @@ class _HistoryPage extends State<HistoryPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     getData();
   }
 
@@ -34,11 +34,9 @@ class _HistoryPage extends State<HistoryPage> {
         await http.get(Uri.parse(ipAddress + "api/history"), headers: header);
     final res = jsonDecode(req.body);
     if (req.statusCode == 202) {
-      print(res);
       setState(() {
         data = res["data"];
       });
-      print(data);
     } else {
       throw Exception("Gagal mendapatkan data");
     }
@@ -55,11 +53,6 @@ class _HistoryPage extends State<HistoryPage> {
               'assets/logo-tiket2.png',
               height: 80,
             ),
-            IconButton(
-              icon: Icon(Icons.shopping_cart),
-              color: Color(0xFF0027B4),
-              onPressed: () {},
-            ),
           ],
         ),
         centerTitle: true,
@@ -75,45 +68,55 @@ class _HistoryPage extends State<HistoryPage> {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final order = data[index];
+              child: data.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Belum ada riwayat transaksi',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final order = data[index];
 
-                  return Card(
-                      elevation: 0,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: InkWell(
-                        onTap: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  HistoryDetailPage(id: order['id']),
-                            )),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                order['created_at']!,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                        return Card(
+                          elevation: 0,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          child: InkWell(
+                            onTap: () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      HistoryDetailPage(id: order['id']),
+                                )),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    order['created_at']!,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text('${order['total']!}',
+                                      style: TextStyle(fontSize: 14)),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    'Status: ${order['status'] == 0 ? "Diproses" : order['status'] == 1 ? "Diterima" : "Ditolak"}',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  SizedBox(height: 8),
+                                ],
                               ),
-                              SizedBox(height: 4),
-                              Text('${order['total']!}',
-                                  style: TextStyle(fontSize: 14)),
-                              SizedBox(height: 4),
-                              Text(
-                                  'Status: ${order['status'] == 0 ? "Diproses" : order['status'] == 1 ? "Diterima" : "Ditolak"}',
-                                  style: TextStyle(fontSize: 12)),
-                              SizedBox(height: 8),
-                            ],
+                            ),
                           ),
-                        ),
-                      ));
-                },
-              ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
